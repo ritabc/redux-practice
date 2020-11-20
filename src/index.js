@@ -18,6 +18,8 @@ store.dispatch(projectAdded({ name: "Project 1" }));
 
 console.log(store.getState());
 
-const unresolvedBugs = getUnresolvedBugs(store.getState());
+const x = getUnresolvedBugs(store.getState());
+const y = getUnresolvedBugs(store.getState());
 
-console.log(unresolvedBugs);
+// True with memoization (usnig reslect library), false otherwise
+console.log(x === y);

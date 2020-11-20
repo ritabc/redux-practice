@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 let lastID = 0;
 
@@ -29,6 +30,15 @@ const slice = createSlice({
 export const { bugAdded, bugResolved } = slice.actions;
 export default slice.reducer;
 
-// Selector Function
-export const getUnresolvedBugs = (state) =>
-  state.entities.bugs.filter((bug) => !bug.resolved);
+// Selector Function - without memoization
+// export const getUnresolvedBugs = (state) =>
+//   state.entities.bugs.filter((bug) => !bug.resolved);
+
+// Create selector with memoization
+export const getUnresolvedBugs = createSelector(
+  // The input functions are here
+  (state) => state.entities.bugs,
+  (state) => state.entities.projects,
+  // The selector function here will be calculated iff the input (in this case bugs & projects) are the same
+  (bugs, projects) => bugs.filter((bug) => !bug.resolved)
+);
