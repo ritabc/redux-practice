@@ -52,3 +52,13 @@ store.dispatch({
   type: "error",
   payload: { message: "An error occurred." },
 });
+
+store.dispatch({
+  type: "apiCallBegan", // OR apiRequest, etc,
+  payload: {
+    // All data the API call needs
+    url: "/bugs",
+    onSuccess: "bugsReceived", // the name of the action that should be dispatched upon success
+    onError: "apiRequestFailed", // Or 'bugRequestFailed'
+  },
+});
