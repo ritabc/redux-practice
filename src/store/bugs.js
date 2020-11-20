@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
-
+import { apiCallBegan } from "./api";
 let lastID = 0;
 
 // calls redux/toolkit's createAction and createReducer (to enable us to write mutating code) functions:
@@ -44,8 +44,17 @@ export const {
   bugResolved,
   bugRemoved,
   bugAssignedToDeveloper,
+  bugsReceived,
 } = slice.actions;
 export default slice.reducer;
+
+// Action Creators
+const url = "/bugs";
+export const loadBugs = () =>
+  apiCallBegan({
+    url,
+    onSuccess: bugsReceived.type, // the name of the action that should be dispatched upon success
+  });
 
 // Selector Function - without memoization
 // export const getUnresolvedBugs = (state) =>

@@ -5,11 +5,10 @@ import {
   bugAssignedToDeveloper,
   getBugsByDeveloper,
   getUnresolvedBugs,
+  loadBugs,
 } from "./store/bugs";
 import { projectAdded } from "./store/projects";
 import { developerAdded } from "./store/developers";
-import * as actions from "./store/api";
-
 const store = configureStore();
 
 store.subscribe(() => {
@@ -54,10 +53,5 @@ store.subscribe(() => {
 //   payload: { message: "An error occurred." },
 // });
 
-store.dispatch(
-  actions.apiCallBegan({
-    url: "/bugs",
-    onSuccess: "bugs/bugsReceived", // the name of the action that should be dispatched upon success
-    onError: actions.apiCallFailed.type, // Or 'bugRequestFailed'
-  })
-);
+// UI Layer
+store.dispatch(loadBugs());
