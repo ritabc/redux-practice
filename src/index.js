@@ -39,3 +39,11 @@ store.dispatch(developerAdded({ name: "Alice" }));
 
 // const bugs = getBugsByDeveloper(1)(store.getState());
 // console.log(bugs);
+
+// Example of dispatching a function
+store.dispatch((dispatch, getState) => {
+  // Call an API
+  // When the promise is received => dispatch()
+  dispatch({ type: "bugsReceived", bugs: [1, 2, 3] });
+  console.log(getState());
+});
