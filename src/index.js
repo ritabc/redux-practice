@@ -16,7 +16,7 @@ store.subscribe(() => {
   console.log("Store changed");
 });
 
-store.dispatch(developerAdded({ name: "Alice" }));
+// store.dispatch(developerAdded({ name: "Alice" }));
 // store.dispatch(developerAdded({ name: "Sally" }));
 // store.dispatch(developerAdded({ name: "John" }));
 
@@ -42,22 +42,22 @@ store.dispatch(developerAdded({ name: "Alice" }));
 // console.log(bugs);
 
 // Example of dispatching a function
-store.dispatch((dispatch, getState) => {
-  // Call an API
-  // When the promise is received => dispatch()
-  dispatch({ type: "bugsReceived", bugs: [1, 2, 3] });
-  console.log(getState());
-});
+// store.dispatch((dispatch, getState) => {
+//   // Call an API
+//   // When the promise is received => dispatch()
+//   dispatch({ type: "bugsReceived", bugs: [1, 2, 3] });
+//   console.log(getState());
+// });
 
-store.dispatch({
-  type: "error",
-  payload: { message: "An error occurred." },
-});
+// store.dispatch({
+//   type: "error",
+//   payload: { message: "An error occurred." },
+// });
 
 store.dispatch(
   actions.apiCallBegan({
     url: "/bugs",
-    onSuccess: "bugsReceived", // the name of the action that should be dispatched upon success
+    onSuccess: "bugs/bugsReceived", // the name of the action that should be dispatched upon success
     onError: actions.apiCallFailed.type, // Or 'bugRequestFailed'
   })
 );

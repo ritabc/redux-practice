@@ -7,27 +7,34 @@ let lastID = 0;
 // Note the actions created here will be namespaced, ie: 'bugs/bugAdded'. For example, see the Redux tab in web dev tools
 const slice = createSlice({
   name: "bugs",
-  initialState: [],
+  initialState: {
+    list: [],
+    loading: false, // When true, UI will display loading icon
+    lastFetch: null, // timestamp of last time we called the server to get list of bugs. This is useful if we want to implement time-based caching
+  },
   // maps action to action handler
   reducers: {
     bugAdded: (bugs, action) => {
-      bugs.push({
+      bugs.list.push({
         id: ++lastID,
         description: action.payload.description,
         resolved: false,
       });
     },
     bugResolved: (bugs, action) => {
-      const index = bugs.findIndex((bug) => bug.id === action.payload.id);
-      bugs[index].resolved = true;
+      const index = bugs.list.findIndex((bug) => bug.id === action.payload.id);
+      bugs.list[index].resolved = true;
     },
     bugRemoved: (bugs, action) => {
-      bugs.filter((bug) => bug.id !== action.payload.id);
+      bugs.list.filter((bug) => bug.id !== action.payload.id);
     },
     bugAssignedToDeveloper: (bugs, action) => {
       const { bugId, developerId } = action.payload;
-      const index = bugs.findIndex((bug) => bug.id === bugId);
-      bugs[index].developerId = developerId;
+      const index = bugs.list.findIndex((bug) => bug.id === bugId);
+      bugs.list[index].developerId = developerId;
+    },
+    bugsReceived: (bugs, action) => {
+      bugs.list = action.payload;
     },
   },
 });
