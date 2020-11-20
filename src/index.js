@@ -16,26 +16,26 @@ store.subscribe(() => {
 });
 
 store.dispatch(developerAdded({ name: "Alice" }));
-store.dispatch(developerAdded({ name: "Sally" }));
-store.dispatch(developerAdded({ name: "John" }));
+// store.dispatch(developerAdded({ name: "Sally" }));
+// store.dispatch(developerAdded({ name: "John" }));
 
-store.dispatch(bugAdded({ description: "Bug 1" }));
-store.dispatch(bugAdded({ description: "Bug 2" }));
-store.dispatch(bugAdded({ description: "Bug 3" }));
-store.dispatch(bugResolved({ id: 1 }));
+// store.dispatch(bugAdded({ description: "Bug 1" }));
+// store.dispatch(bugAdded({ description: "Bug 2" }));
+// store.dispatch(bugAdded({ description: "Bug 3" }));
+// store.dispatch(bugResolved({ id: 1 }));
 
-// store.dispatch(projectAdded("Project 1"));
-store.dispatch(projectAdded({ name: "Project 1" }));
+// // store.dispatch(projectAdded("Project 1"));
+// store.dispatch(projectAdded({ name: "Project 1" }));
 
-console.log(store.getState());
+// console.log(store.getState());
 
-// const x = getUnresolvedBugs(store.getState());
-// const y = getUnresolvedBugs(store.getState());
+// // const x = getUnresolvedBugs(store.getState());
+// // const y = getUnresolvedBugs(store.getState());
 
-// True with memoization (usnig reslect library), false otherwise
-// console.log(x === y);
+// // True with memoization (usnig reslect library), false otherwise
+// // console.log(x === y);
 
-store.dispatch(bugAssignedToDeveloper({ bugId: 2, developerId: 1 }));
+// store.dispatch(bugAssignedToDeveloper({ bugId: 2, developerId: 1 }));
 
-const bugs = getBugsByDeveloper(1)(store.getState());
-console.log(bugs);
+// const bugs = getBugsByDeveloper(1)(store.getState());
+// console.log(bugs);
