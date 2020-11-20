@@ -8,6 +8,7 @@ import {
 } from "./store/bugs";
 import { projectAdded } from "./store/projects";
 import { developerAdded } from "./store/developers";
+import * as actions from "./store/api";
 
 const store = configureStore();
 
@@ -53,12 +54,10 @@ store.dispatch({
   payload: { message: "An error occurred." },
 });
 
-store.dispatch({
-  type: "apiCallBegan", // OR apiRequest, etc,
-  payload: {
-    // All data the API call needs
+store.dispatch(
+  actions.apiCallBegan({
     url: "/bugs",
     onSuccess: "bugsReceived", // the name of the action that should be dispatched upon success
-    onError: "apiRequestFailed", // Or 'bugRequestFailed'
-  },
-});
+    onError: actions.apiCallFailed.type, // Or 'bugRequestFailed'
+  })
+);
