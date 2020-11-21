@@ -1,5 +1,7 @@
+import axios from "axios";
 import { addBug } from "../bugs";
 import configureStore from "../configureStore";
+import MockAdapter from "axios-mock-adapter";
 
 // // Solitary test
 // describe("bugsSlice", () => {
@@ -21,7 +23,7 @@ import configureStore from "../configureStore";
 //   });
 // });
 
-// Social Test
+// Social Test - will fail if backend server is not running (so, technically, an integration test)
 describe("bugsSlice", () => {
   it("should handle the addBug action", async () => {
     // dispatch(addBug) => check the store
@@ -29,5 +31,17 @@ describe("bugsSlice", () => {
     const bug = { description: "a" };
     await store.dispatch(addBug(bug));
     expect(store.getState().entities.bugs.list).toHaveLength(1);
+  });
+});
+
+describe("bugsSlice", () => {
+  it("should handle the addBug action", async () => {
+    const bug = { description: "a" };
+    const savedBug = { ...bug, id: 1 };
+    const fakeAxios = new MockAdapter(axios);
+    fakeAxios.onPost("/bugs").reply(200, savedBug);
+    const store = configureStore();
+    await store.dispatch(addBug(bug));
+    expect(store.getState().entities.bugs.list).toContainEqual(savedBug);
   });
 });
