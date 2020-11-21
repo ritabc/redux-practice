@@ -20,14 +20,12 @@ const slice = createSlice({
     },
     bugResolved: (bugs, action) => {
       const index = bugs.list.findIndex((bug) => bug.id === action.payload.id);
-      console.log(bugs.list);
       bugs.list[index].resolved = true;
     },
     bugRemoved: (bugs, action) => {
       bugs.list.filter((bug) => bug.id !== action.payload.id);
     },
     bugAssignedToDeveloper: (bugs, action) => {
-      console.log(action.payload);
       const { id: bugId, developerId } = action.payload;
       const index = bugs.list.findIndex((bug) => bug.id === bugId);
       bugs.list[index].userId = developerId;
@@ -64,8 +62,10 @@ const url = "/bugs";
 export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs;
   const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
+
   if (diffInMinutes < 10) return;
-  dispatch(
+
+  return dispatch(
     apiCallBegan({
       url,
       onStart: bugsRequested.type,
@@ -110,8 +110,8 @@ export const getUnresolvedBugs = createSelector(
   // The input functions are here
   (state) => state.entities.bugs,
   (state) => state.entities.projects,
-  // The selector function here will be calculated iff the input (in this case bugs & projects) are the same
-  (bugs, projects) => bugs.filter((bug) => !bug.resolved)
+  // The selector function here will be not be re-calculated iff the input (in this case bugs & projects) are the same
+  (bugs, projects) => bugs.list.filter((bug) => !bug.resolved)
 );
 
 export const getBugsByDeveloper = (developerId) =>
