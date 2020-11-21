@@ -1,4 +1,3 @@
 /.vscode
-/node_modules
-/MoshSourceCode
+redux-practice/node_modules
 /bugs-backend/node_modules
