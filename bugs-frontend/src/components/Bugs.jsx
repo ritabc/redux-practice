@@ -1,31 +1,16 @@
 import React, { Component } from "react";
-import StoreContext from "../contexts/storeContext";
 import { loadBugs } from "../store/bugs";
+import { connect } from "react-redux";
 
 class Bugs extends Component {
-  static contextType = StoreContext;
-  state = { bugs: [] };
   componentDidMount() {
-    const store = this.context;
-
-    // subscribe so we get notified when the state of the store changes
-    this.unsubscribe = store.subscribe(() => {
-      const bugsInStore = store.getState().entities.bugs.list;
-      if (this.state.bugs !== bugsInStore) this.setState({ bugs: bugsInStore });
-    });
-
-    // dispatch(loadBugs) to get list of bugs from backend
-    store.dispatch(loadBugs());
-    console.log(this.context);
+    this.props.loadBugs();
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
   render() {
     return (
       <ul>
-        {this.state.bugs.map((bug) => (
+        {this.props.bugs.map((bug) => (
           <li key={bug.id}>{bug.description}</li>
         ))}
       </ul>
@@ -33,6 +18,20 @@ class Bugs extends Component {
   }
 }
 
-Bugs.contextType = StoreContext;
+const mapStateToProps = (state) => ({
+  bugs: state.entities.bugs.list,
+});
 
-export default Bugs;
+const mapDispatchToProps = (dispatch) => ({
+  // Properties of this object are the props of the component
+  loadBugs: () => dispatch(loadBugs()),
+});
+
+// First argument: which part of the store is this component interested in?
+/// In this case, bugs. This argument should be a function that returns an object
+// Second argument is another function and is for dispatching actions. Takes dispatch func of store, maps to props of component.
+// Calling the func that connect returns creates another function that
+// Call connect() -> returns another function -> Calling this with Bugs component -> creates a new component under the hood that wraps the Bug component -> This comp takes care of subscribing & unsuscbribing from teh store
+// Bugs component is a dummy or presentationi component: it only presents data
+// The wrapper component is a container component
+export default connect(mapStateToProps, mapDispatchToProps)(Bugs);
