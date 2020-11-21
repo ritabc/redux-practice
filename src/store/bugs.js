@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
-let lastID = 0;
+import moment from "moment";
 
 // calls redux/toolkit's createAction and createReducer (to enable us to write mutating code) functions:
 // Note the actions created here will be namespaced, ie: 'bugs/bugAdded'. For example, see the Redux tab in web dev tools
@@ -14,28 +14,28 @@ const slice = createSlice({
   },
   // maps action to action handler
   reducers: {
+    // an event (bugAdded) (as opposed to addBug, with is a command)
     bugAdded: (bugs, action) => {
-      bugs.list.push({
-        id: ++lastID,
-        description: action.payload.description,
-        resolved: false,
-      });
+      bugs.list.push(action.payload);
     },
     bugResolved: (bugs, action) => {
       const index = bugs.list.findIndex((bug) => bug.id === action.payload.id);
+      console.log(bugs.list);
       bugs.list[index].resolved = true;
     },
     bugRemoved: (bugs, action) => {
       bugs.list.filter((bug) => bug.id !== action.payload.id);
     },
     bugAssignedToDeveloper: (bugs, action) => {
-      const { bugId, developerId } = action.payload;
+      console.log(action.payload);
+      const { id: bugId, developerId } = action.payload;
       const index = bugs.list.findIndex((bug) => bug.id === bugId);
-      bugs.list[index].developerId = developerId;
+      bugs.list[index].userId = developerId;
     },
     bugsReceived: (bugs, action) => {
       bugs.list = action.payload;
       bugs.loading = false;
+      bugs.lastFetch = Date.now();
     },
     bugsRequested: (bugs, action) => {
       bugs.loading = true;
@@ -46,7 +46,8 @@ const slice = createSlice({
   },
 });
 
-export const {
+// Only command-notions (the ones that call apiCallBegan) should be updated
+const {
   bugAdded,
   bugResolved,
   bugRemoved,
@@ -57,16 +58,49 @@ export const {
 } = slice.actions;
 export default slice.reducer;
 
-// Action Creators
 const url = "/bugs";
-export const loadBugs = () =>
+
+// Action creator
+export const loadBugs = () => (dispatch, getState) => {
+  const { lastFetch } = getState().entities.bugs;
+  const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
+  if (diffInMinutes < 10) return;
+  dispatch(
+    apiCallBegan({
+      url,
+      onStart: bugsRequested.type,
+      onSuccess: bugsReceived.type,
+      onError: bugsRequestFailed.type,
+    })
+  );
+};
+
+// a command (addBug) (as opposed to bugAdded, with is an event)
+export const addBug = (bug) =>
   apiCallBegan({
     url,
-    onStart: bugsRequested.type,
-    onSuccess: bugsReceived.type, // the name of the action that should be dispatched upon success
-    onError: bugsRequestFailed.type,
+    method: "post",
+    data: bug,
+    onSuccess: bugAdded.type,
   });
 
+export const resolveBug = (bugId) =>
+  apiCallBegan({
+    url: `${url}/${bugId}`,
+    method: "patch",
+    data: {
+      resolved: true,
+    },
+    onSuccess: bugResolved.type,
+  });
+
+export const assignBugToDeveloper = (bugId, developerId) =>
+  apiCallBegan({
+    url: `${url}/${bugId}`,
+    method: "patch",
+    data: { developerId },
+    onSucces: bugAssignedToDeveloper.type,
+  });
 // Selector Function - without memoization
 // export const getUnresolvedBugs = (state) =>
 //   state.entities.bugs.filter((bug) => !bug.resolved);

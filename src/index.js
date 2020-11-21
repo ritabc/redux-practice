@@ -6,6 +6,9 @@ import {
   getBugsByDeveloper,
   getUnresolvedBugs,
   loadBugs,
+  addBug,
+  resolveBug,
+  assignBugToDeveloper,
 } from "./store/bugs";
 import { projectAdded } from "./store/projects";
 import { developerAdded } from "./store/developers";
@@ -54,4 +57,12 @@ store.subscribe(() => {
 // });
 
 // UI Layer
+// store.dispatch(loadBugs());
+// setTimeout(() => {
+//   store.dispatch(loadBugs());
+// }, 2000);
+
 store.dispatch(loadBugs());
+// store.dispatch(addBug({ description: "a" }));
+
+setTimeout(() => store.dispatch(assignBugToDeveloper(1, 4)), 2000);

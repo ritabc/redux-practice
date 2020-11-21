@@ -10,9 +10,9 @@ export default function () {
     reducer,
     middleware: [
       ...getDefaultMiddleware(),
-      toast,
-      logger,
-      paramaterizedLogger("console"),
+      //   toast,
+      //   logger,
+      //   paramaterizedLogger("console"),
       api,
     ],
   });
