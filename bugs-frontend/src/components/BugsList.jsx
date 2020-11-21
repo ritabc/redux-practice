@@ -14,7 +14,10 @@ const BugsList = () => {
   return (
     <ul>
       {bugs.map((bug) => (
-        <li key={bug.id}>{bug.description}</li>
+        <li key={bug.id}>
+          <button onClick={() => dispatch(resolveBug(bug.id))}></button>
+          {bug.description}
+        </li>
       ))}
     </ul>
   );
